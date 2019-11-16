@@ -57,7 +57,8 @@ void Finder::searchSubstr(const QString &file_name)
         uint32_t hash_substr = 0;
         uint32_t max_power = 1;
         int count = 0;
-        QString indexes = 0;
+        int line_count = 0;
+        QString indexes = "Entrances in format line:number in string ";
         QString symbol;
         for(int i = 0; i < Substr_.size(); ++i) {
             if (QThread::currentThread()->isInterruptionRequested()) {
@@ -70,13 +71,17 @@ void Finder::searchSubstr(const QString &file_name)
         max_power/=P_;
         QQueue<QChar> q;
         uint32_t power = max_power;
-        int i = 0;
-        for(; i < Substr_.size(); ++i) {
+        int k = 0;
+        for(int i = 0; i < Substr_.size(); ++i, ++k) {
             if (QThread::currentThread()->isInterruptionRequested()) {
                 return;
             }
             if ((symbol = stream.read(1)).isEmpty()) {
                 return;
+            }
+            if (symbol == "\n" || symbol == "\r") {
+                line_count++;
+                k = 0;
             }
             hash += power * symbol[0].unicode();
             q.enqueue(symbol[0]);
@@ -84,7 +89,7 @@ void Finder::searchSubstr(const QString &file_name)
         }
         if (hash == hash_substr) {
             count++;
-            indexes += QString::number(i) + " ";
+            indexes += QString::number(line_count) + ":" + QString::number(k) + " ";
         }
 
         while(!(symbol = stream.read(1)).isEmpty()) {
@@ -98,15 +103,21 @@ void Finder::searchSubstr(const QString &file_name)
             hash *= P_;
             hash += symbol[0].unicode();
             q.enqueue(symbol[0].unicode());
-            ++i;
             if (hash == hash_substr) {
                 count++;
-                indexes += QString::number(i) + " ";
+                indexes += QString::number(line_count) + ":" + QString::number(k) + " ";
+            }
+            ++k;
+            if (symbol == "\n" || symbol == "\r") {
+                line_count++;
+                k = 0;
             }
         }
         if (count > 0) {
             emit onSubstrFound(file_name, indexes, count);
         }
+    } else {
+        qDebug() << "Can't open file" + file_name;
     }
 }
 
