@@ -65,18 +65,20 @@ void MainWindow::FinishSubdirectory()
         ui->progressBar->setValue(100);
         ui->pushButton->setText("find");
         ui->actionSelect_directory->setEnabled(true);
+        isStop = false;
     } else {
         ui->progressBar->setValue(counted * 100/(QDir(Dir_).count() - 2));
     }
     if (counted == int(QDir(Dir_).count() - 2)) {
         ui->pushButton->setText("find");
         ui->actionSelect_directory->setEnabled(true);
+        isStop = false;
     }
 }
 
 void MainWindow::buttonClicked()
 {
-    if (ui->pushButton->text() == "find") {
+    if (!isStop) {
         ui->progressBar->setValue(0);
         counted = 0;
         ui->treeWidget->clear();
@@ -108,6 +110,7 @@ void MainWindow::buttonClicked()
         ui->pushButton->setText("find");
         ui->actionSelect_directory->setEnabled(true);
     }
+    isStop = !isStop;
 }
 
 void MainWindow::scanDirectory(const QString &dir, const QString& s)
