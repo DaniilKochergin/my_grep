@@ -20,6 +20,7 @@ private:
     QString Dir_;
     QString Substr_;
     static const uint32_t P_ = 31;
+    static const int MAX_ENTERENCES = 50;
 };
 
 #endif // FINDER_H

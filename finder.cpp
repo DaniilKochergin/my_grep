@@ -106,6 +106,9 @@ void Finder::searchSubstr(const QString &file_name)
             if (hash == hash_substr) {
                 count++;
                 indexes += QString::number(line_count) + ":" + QString::number(k) + " ";
+                if (count == MAX_ENTERENCES) {
+                    break;
+                }
             }
             ++k;
             if (symbol == "\n" || symbol == "\r") {
