@@ -70,7 +70,7 @@ void Finder::searchSubstr(const QString &file_name)
             pr.push_back(max_power);
             max_power *= P_;
         }
-        max_power /= P_;
+        max_power = pr.back();
         QQueue<QChar> q;
         uint32_t power = max_power;
         int k = 0;
