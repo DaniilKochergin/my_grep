@@ -26,7 +26,6 @@ public slots:
     void buttonClicked();
 private:
     int counted = 0;
-    bool StopButton = false;
     QVector<QThread *> Threads_;
     QString Dir_;
     Ui::MainWindow *ui;

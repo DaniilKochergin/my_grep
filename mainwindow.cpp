@@ -60,7 +60,11 @@ void MainWindow::reciveEnterence(const QString& file_name, const QString &entere
 void MainWindow::FinishSubdirectory()
 {
     counted++;
-    ui->progressBar->setValue(counted*100/ (QDir(Dir_).count() - 2));
+    if (QDir(Dir_).count() == 2) {
+        ui->progressBar->setValue(100);
+    } else {
+        ui->progressBar->setValue(counted*100/ (QDir(Dir_).count() - 2));
+    }
     if (counted == (QDir(Dir_).count() - 2)) {
         ui->pushButton->setText("find");
         ui->actionSelect_directory->setEnabled(true);
@@ -69,11 +73,15 @@ void MainWindow::FinishSubdirectory()
 
 void MainWindow::buttonClicked()
 {
-    if (!StopButton) {
+    if (ui->pushButton->text() == "find") {
         ui->progressBar->setValue(0);
         counted = 0;
         ui->treeWidget->clear();
         auto s = ui->lineEdit->text();
+        if (s.isEmpty()) {
+           ui->lineEdit->setText("Substr can't be empty:(");
+           return;
+        }
         ui->pushButton->setDisabled(true);
         scanDirectory(Dir_, s);
         ui->pushButton->setEnabled(true);
@@ -97,7 +105,6 @@ void MainWindow::buttonClicked()
         ui->pushButton->setText("find");
         ui->actionSelect_directory->setEnabled(true);
     }
-    StopButton = !StopButton;
 }
 
 void MainWindow::scanDirectory(const QString &dir, const QString& s)
