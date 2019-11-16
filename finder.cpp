@@ -60,12 +60,14 @@ void Finder::searchSubstr(const QString &file_name)
         int line_count = 0;
         QString indexes = "Entrances in format \"line:number in string\" ";
         QString symbol;
+        QVector<uint32_t> pr;
         for(int i = 0; i < Substr_.size(); ++i) {
             if (QThread::currentThread()->isInterruptionRequested()) {
                 return;
             }
             QChar a = Substr_[Substr_.size()-i - 1];
             hash_substr += a.unicode() * max_power;
+            pr.push_back(max_power);
             max_power *= P_;
         }
         max_power /= P_;
@@ -83,9 +85,8 @@ void Finder::searchSubstr(const QString &file_name)
                 line_count++;
                 k = 0;
             }
-            hash += power * symbol[0].unicode();
+            hash += pr[Substr_.size() - i - 1] * symbol[0].unicode();
             q.enqueue(symbol[0]);
-            power /= P_;
         }
         if (hash == hash_substr) {
             count++;
