@@ -16,12 +16,27 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSelect_directory, &QAction::triggered, this, &MainWindow::selectDirectory);
     connect(ui->actionExit, &QAction::triggered, this, &QWidget::close);
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::buttonClicked);
+    ui->progressBar->setValue(0);
     ui->currentDirectory->setReadOnly(true);
 
 }
 
 MainWindow::~MainWindow()
 {
+    ui->pushButton->setDisabled(true);
+    for(const auto &thr: Threads_) {
+        if (thr && thr->isRunning()) {
+            thr->requestInterruption();
+        }
+    }
+    for(const auto &thr: Threads_) {
+        if (thr && thr->isRunning()) {
+            thr->wait();
+        }
+        delete thr;
+    }
+    ui->pushButton->setEnabled(true);
+    Threads_.clear();
     delete ui;
 }
 
@@ -42,9 +57,21 @@ void MainWindow::reciveEnterence(const QString& file_name, const QString &entere
     ui->treeWidget->addTopLevelItem(item);
 }
 
+void MainWindow::FinishSubdirectory()
+{
+    counted++;
+    ui->progressBar->setValue(counted*100/ (QDir(Dir_).count() - 2));
+    if (counted == (QDir(Dir_).count() - 2)) {
+        ui->pushButton->setText("find");
+        ui->actionSelect_directory->setEnabled(true);
+    }
+}
+
 void MainWindow::buttonClicked()
 {
     if (!StopButton) {
+        ui->progressBar->setValue(0);
+        counted = 0;
         ui->treeWidget->clear();
         auto s = ui->lineEdit->text();
         ui->pushButton->setDisabled(true);
@@ -84,6 +111,7 @@ void MainWindow::scanDirectory(const QString &dir, const QString& s)
         Threads_.append(thread);
         connect(thread, &QThread::started, finder, &Finder::findSubstr);
         connect(finder, &Finder::onSubstrFound, this, &MainWindow::reciveEnterence);
+        connect(finder, &Finder::completeDir, this, &MainWindow::FinishSubdirectory);
         thread->start();
     }
     qDebug()<<"All threads connected";

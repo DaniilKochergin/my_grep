@@ -9,6 +9,7 @@ public:
     Finder(const QString& dir, const QString& s);
 signals:
     void onSubstrFound(const QString& file_name, const QString& enterences, int count);
+    void completeDir();
 public slots:
     void findSubstr();
 private:

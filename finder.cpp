@@ -16,6 +16,7 @@ void Finder::findSubstr()
 {
     findFiles(Dir_);
     emit QThread::currentThread()->quit();
+    emit completeDir();
 }
 
 void Finder::findFiles(const QString &dir)
