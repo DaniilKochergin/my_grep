@@ -42,10 +42,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::selectDirectory()
 {
-    Dir_ = QFileDialog::getExistingDirectory(this, "Select Directory for Scanning",
-                                             QString(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    ui->currentDirectory->setText(Dir_);
-    ui->pushButton->setEnabled(true);
+    auto dir = QFileDialog::getExistingDirectory(this, "Select Directory for Scanning",
+                                                 QString(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (!dir.isEmpty()) {
+        Dir_ = dir;
+        ui->currentDirectory->setText(Dir_);
+        ui->pushButton->setEnabled(true);
+    }
 }
 
 void MainWindow::reciveEnterence(const QString& file_name, const QString &enterences, int count)
@@ -84,8 +87,8 @@ void MainWindow::buttonClicked()
         ui->treeWidget->clear();
         auto s = ui->lineEdit->text();
         if (s.isEmpty()) {
-           ui->lineEdit->setText("Substr can't be empty:(");
-           return;
+            ui->lineEdit->setText("Substr can't be empty:(");
+            return;
         }
         ui->pushButton->setDisabled(true);
         scanDirectory(Dir_, s);
