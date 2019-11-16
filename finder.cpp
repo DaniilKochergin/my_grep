@@ -68,7 +68,7 @@ void Finder::searchSubstr(const QString &file_name)
             hash_substr += a.unicode() * max_power;
             max_power *= P_;
         }
-        max_power/=P_;
+        max_power /= P_;
         QQueue<QChar> q;
         uint32_t power = max_power;
         int k = 0;

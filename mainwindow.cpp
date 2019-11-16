@@ -68,7 +68,7 @@ void MainWindow::FinishSubdirectory()
     } else {
         ui->progressBar->setValue(counted * 100/(QDir(Dir_).count() - 2));
     }
-    if (counted == (QDir(Dir_).count() - 2)) {
+    if (counted == int(QDir(Dir_).count() - 2)) {
         ui->pushButton->setText("find");
         ui->actionSelect_directory->setEnabled(true);
     }
