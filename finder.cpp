@@ -58,7 +58,7 @@ void Finder::searchSubstr(const QString &file_name)
         uint32_t max_power = 1;
         int count = 0;
         int line_count = 0;
-        QString indexes = "Entrances in format line:number in string ";
+        QString indexes = "Entrances in format \"line:number in string\" ";
         QString symbol;
         for(int i = 0; i < Substr_.size(); ++i) {
             if (QThread::currentThread()->isInterruptionRequested()) {

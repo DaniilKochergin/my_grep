@@ -12,11 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), qApp->desktop()->availableGeometry()));
     connect(ui->actionSelect_directory, &QAction::triggered, this, &MainWindow::selectDirectory);
     connect(ui->actionExit, &QAction::triggered, this, &QWidget::close);
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::buttonClicked);
     ui->progressBar->setValue(0);
+    ui->pushButton->setDisabled(true);
     ui->currentDirectory->setReadOnly(true);
 
 }
@@ -45,6 +45,7 @@ void MainWindow::selectDirectory()
     Dir_ = QFileDialog::getExistingDirectory(this, "Select Directory for Scanning",
                                              QString(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     ui->currentDirectory->setText(Dir_);
+    ui->pushButton->setEnabled(true);
 }
 
 void MainWindow::reciveEnterence(const QString& file_name, const QString &enterences, int count)
